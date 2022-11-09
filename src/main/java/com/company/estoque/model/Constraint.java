@@ -13,8 +13,8 @@ public class Constraint {
     public static final String NOT_NULL = "NOT NULL ";
     public static final String UNIQUE = "UNIQUE "; 
     
-    private String text;
-    
+    private String text = "";
+    public Constraint() {}
     public Constraint(String text) {
         this.text = text;
     }

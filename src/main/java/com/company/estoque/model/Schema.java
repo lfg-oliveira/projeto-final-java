@@ -4,19 +4,21 @@
  */
 package com.company.estoque.model;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author guilu
- * @param <T>
+ * 
  * 
  * Classe abstrata responsável por gerenciar o comportamento repetido das models
  */
-public abstract class Schema<T> {
+public abstract class Schema {
     private String tableName = this.getClass().getSimpleName();
     private List<Column> fields = new ArrayList();
     
@@ -44,8 +46,37 @@ public abstract class Schema<T> {
         }
     }
 
+    public String update(Map<String, Object> updates, String ...where) {
+        try{
+            String sql = "UPDATE "+tableName+" SET ";
+            for(Map.Entry<String, Object> o: updates.entrySet()){
+                sql = sql + o.getKey() + " = " + o.getValue() + ",";
+            }
+            sql = sql.substring(0,sql.length() - 1);
+            if(where.length > 0) {
+                sql = sql + " WHERE ";
+                for(String cond: where) {
+                    sql = sql + cond + " ";
+                }
+            }
+            sql = sql +";";
+            Database.getConnection().createStatement().execute(sql);
+            return sql;
+        }
+        catch(SQLException e) {
+            System.err.println(e);
+        }
+        return null;
+    }
     public Schema(String tableName) {
+        try{
         this.tableName = tableName;
+        Database.getConnection().createStatement().execute(".open database/estoque.db");
+        }
+        catch(SQLException e)
+        {
+            System.err.println(e);
+        }
     }
     
     public Schema() {
@@ -59,4 +90,57 @@ public abstract class Schema<T> {
     public void end() {
         Database.closeConnection();
     }
+    
+    public void setTableName(String newName) {
+        try{
+            Database.getConnection().createStatement()
+                    .execute("DROP TABLE IF EXISTS"+ tableName +";");
+            this.tableName = newName;
+            this.createTable();
+        }
+        catch (SQLException e) {
+            System.err.println(e);
+        }
+    }
+    
+    public void insert(String ...values) {
+        try{
+            String sql = "INSERT INTO "+ tableName + "("+ this +") " + "VALUES (";
+            if(values.length != fields.size()) {
+                throw new SQLException("Número de argumentos diferente "
+                        + "do número de colunas da tabela");
+            }
+            System.out.println(sql);
+            Database.getConnection().createStatement().execute(sql);
+        }
+        catch (SQLException e)
+        {
+            System.err.println(e);
+        }
+    }
+
+    public ResultSet select() {
+        try{
+            var sql = "SELECT * FROM "+ tableName;
+            Statement stmt = Database.getConnection().createStatement();
+            return stmt.executeQuery(sql);
+        }
+        catch( SQLException e)
+        {
+            System.err.println(e);
+        }
+        return null;
+    }
+    @Override
+    public final String toString() {
+        var ret = "";
+        for(Column c: fields)
+        {
+            ret = ret + c +",";
+        }
+        ret = ret.substring(0, ret.length() - 1);
+        return ret;
+    }
+    
+    
 }

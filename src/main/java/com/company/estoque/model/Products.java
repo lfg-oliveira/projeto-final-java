@@ -8,7 +8,7 @@ package com.company.estoque.model;
  *
  * @author guilu
  */
-public class Products extends Schema<Products>{
+public class Products extends Schema{
 
     
     public Products() {

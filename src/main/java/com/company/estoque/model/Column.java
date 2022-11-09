@@ -28,5 +28,9 @@ public class Column {
     public String createColumn() {
         return name + " " + type + " " + constraints;
     }
-    
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
