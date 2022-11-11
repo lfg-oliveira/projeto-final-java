@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.util.Map;
 
 /**
- *
+ * Interface que serve de base para todos os controllers.
  * @author guilu
  * @param <T>
  */
