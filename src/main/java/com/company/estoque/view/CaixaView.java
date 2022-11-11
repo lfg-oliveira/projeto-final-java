@@ -233,27 +233,36 @@ public class CaixaView extends javax.swing.JFrame {
 
     private void btnAdicionarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarItemActionPerformed
         try {
+            if(this.txtQtde.getText().equals("") || this.txtId.getText().equals(""))
+            {
+                JOptionPane.showMessageDialog(this, "Os campos ID e Qtde não podem estar vazios.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             rs = pc.read("rowid", "=", this.txtId.getText());
-
             rs.next();
             int id = Integer.parseInt(txtId.getText());
             int qtde = Integer.parseInt(txtQtde.getText());
-            if (rs.getInt("qtde_estoque") - qtde < 0) {
-                JOptionPane.showMessageDialog(this,
-                        "Quantidade superior aos itens em estoque, "
-                                + "colocando todos os itens disponiveis no pedido"
-                                + ".", 
+            if (rs.getInt("qtde_estoque") - qtde <= 0) {
+                JOptionPane.showMessageDialog(this, """
+                                                    Quantidade superior aos itens em estoque ou n\u00e3o h\u00e1 nenhum item com esse ID. 
+                                                    Colocando os itens disponiveis no pedido.""", 
                         "Sucesso", 
                         JOptionPane.ERROR_MESSAGE);
                 qtde = rs.getInt("qtde_estoque");
             }
+            if(qtde == 0)
+            {
+                return;
+            }
             String nome = rs.getString("desc");
             double preco_unitario = rs.getDouble("preco");
             double subtotal = qtde * preco_unitario;
-
             DefaultTableModel table = (DefaultTableModel) jTable1.getModel();
             table.addRow(new Object[]{id, nome, qtde, preco_unitario, subtotal});
             calculaTotal();
+            txtId.setText("");
+            txtQtde.setText("");
+            
         } catch (Exception ex) {
             Logger.getLogger(CaixaView.class.getName()).log(Level.SEVERE, null, ex);
 
@@ -273,6 +282,12 @@ public class CaixaView extends javax.swing.JFrame {
                 calculaTotal();
                 String id = table.getValueAt(i, 0).toString();
                 pc.update(updates, "rowid", "=", id);
+                JOptionPane.showMessageDialog(this, 
+                        "Compra efeituada com sucesso.");
+                table.setRowCount(0);
+                txtId.setText("");
+                txtQtde.setText("");
+                lblTotal.setText("0,00");
             } catch (SQLException ex) {
                 Logger.getLogger(CaixaView.class.getName()).log(Level.SEVERE, null, ex);
             }

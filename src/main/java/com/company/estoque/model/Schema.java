@@ -123,9 +123,9 @@ public abstract class Schema {
         try{
             var sql = "SELECT rowid, * FROM " + tableName + " WHERE ";
             for(var w : where) {
-                sql = sql + w;
+                sql = sql + w+ " ";
             }
-            sql = sql + ";";
+            sql = sql + " ;";
             Statement stmt = Database.getConnection()
                     .createStatement();
             return stmt.executeQuery(sql);
