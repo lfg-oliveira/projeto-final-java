@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Controller responsável pela model Products
  * @author guilu
  */
 public class ProductController implements Controller<Products> {
