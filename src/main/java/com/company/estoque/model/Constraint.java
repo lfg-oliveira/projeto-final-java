@@ -5,7 +5,7 @@
 package com.company.estoque.model;
 
 /**
- *
+ * Classe ajudante para não repetir quando escrever na hora de criar uma tabela
  * @author guilu
  */
 public class Constraint {
