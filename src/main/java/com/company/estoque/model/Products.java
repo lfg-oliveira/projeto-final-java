@@ -5,7 +5,7 @@
 package com.company.estoque.model;
 
 /**
- *
+ * Representa a model de um produto e faz operações com o banco de dados. 
  * @author guilu
  */
 public class Products extends Schema{
