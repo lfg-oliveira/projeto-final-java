@@ -7,6 +7,7 @@ package com.company.estoque.view;
 import com.company.estoque.controller.ProductController;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -20,20 +21,22 @@ public class CaixaView extends javax.swing.JFrame {
 
     private ResultSet rs;
     private ProductController pc = new ProductController();
+
     /**
      * Creates new form CaixaView
      */
-    
     public void calculaTotal() {
         DefaultTableModel table = (DefaultTableModel) jTable1.getModel();
         Double total = 0.0;
-        for(int i = 0; i < table.getRowCount(); i++) {
+        for (int i = 0; i < table.getRowCount(); i++) {
             total += Double.parseDouble(table.getValueAt(i, table.getColumnCount() - 1).toString());
         }
         lblTotal.setText(total.toString());
     }
+
     public CaixaView() {
         initComponents();
+        jTable1.removeColumn(jTable1.getColumnModel().getColumn(0));
     }
 
     /**
@@ -66,14 +69,14 @@ public class CaixaView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Produto", "Quantidade", "Preço Unitário", "Subtotal"
+                "ID", "Produto", "Quantidade", "Preço Unitário", "Subtotal"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false
+                false, false, true, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -88,6 +91,8 @@ public class CaixaView extends javax.swing.JFrame {
 
         jLabel1.setText("ID:");
 
+        txtId.setMinimumSize(new java.awt.Dimension(90, 22));
+        txtId.setPreferredSize(new java.awt.Dimension(64, 30));
         txtId.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIdActionPerformed(evt);
@@ -127,8 +132,18 @@ public class CaixaView extends javax.swing.JFrame {
         btnFinalizarCompra.setBackground(new java.awt.Color(0, 102, 51));
         btnFinalizarCompra.setForeground(new java.awt.Color(255, 255, 255));
         btnFinalizarCompra.setText("Finalizar Compra");
+        btnFinalizarCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFinalizarCompraActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("Menu Principal");
+        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu1MouseClicked(evt);
+            }
+        });
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -155,8 +170,8 @@ public class CaixaView extends javax.swing.JFrame {
                                     .addComponent(btnAdicionarItem))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnExcluirSelecionado)))
-                        .addGap(109, 109, 109)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -173,11 +188,11 @@ public class CaixaView extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
+                        .addGap(55, 55, 55)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(txtId))
-                        .addGap(18, 18, 18)
+                            .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(txtQtde, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -206,7 +221,7 @@ public class CaixaView extends javax.swing.JFrame {
 
     private void btnExcluirSelecionadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirSelecionadoActionPerformed
         var table = (DefaultTableModel) jTable1.getModel();
-        if(jTable1.getSelectedRow() == -1 ) {
+        if (jTable1.getSelectedRow() == -1) {
             JOptionPane.showMessageDialog(this, "Nenhuma linha"
                     + " foi selecionada para exclusão", "Erro na exclusão",
                     JOptionPane.ERROR_MESSAGE);
@@ -221,19 +236,55 @@ public class CaixaView extends javax.swing.JFrame {
             rs = pc.read("rowid", "=", this.txtId.getText());
 
             rs.next();
+            int id = Integer.parseInt(txtId.getText());
             int qtde = Integer.parseInt(txtQtde.getText());
+            if (rs.getInt("qtde_estoque") - qtde < 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Quantidade superior aos itens em estoque, "
+                                + "colocando todos os itens disponiveis no pedido"
+                                + ".", 
+                        "Sucesso", 
+                        JOptionPane.ERROR_MESSAGE);
+                qtde = rs.getInt("qtde_estoque");
+            }
             String nome = rs.getString("desc");
             double preco_unitario = rs.getDouble("preco");
             double subtotal = qtde * preco_unitario;
 
             DefaultTableModel table = (DefaultTableModel) jTable1.getModel();
-            table.addRow(new Object[] {nome, qtde, preco_unitario, subtotal});
+            table.addRow(new Object[]{id, nome, qtde, preco_unitario, subtotal});
             calculaTotal();
         } catch (Exception ex) {
             Logger.getLogger(CaixaView.class.getName()).log(Level.SEVERE, null, ex);
 
         }
     }//GEN-LAST:event_btnAdicionarItemActionPerformed
+
+    private void btnFinalizarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalizarCompraActionPerformed
+        DefaultTableModel table = (DefaultTableModel) jTable1.getModel();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            try {
+                rs = pc.read("rowid", "=", table.getValueAt(i, 0).toString());
+                rs.next();
+                int qtde = Integer.parseInt(table.getValueAt(i, 2).toString());
+
+                var updates = new HashMap<String, Object>();
+                updates.put("qtde_estoque", qtde);
+                calculaTotal();
+                String id = table.getValueAt(i, 0).toString();
+                pc.update(updates, "rowid", "=", id);
+            } catch (SQLException ex) {
+                Logger.getLogger(CaixaView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }//GEN-LAST:event_btnFinalizarCompraActionPerformed
+
+    private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
+        MenuPrincipalView.newFrame();
+        this.dispose();
+
+    }//GEN-LAST:event_jMenu1MouseClicked
 
     /**
      * @param args the command line arguments
