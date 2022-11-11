@@ -21,7 +21,7 @@ public class Constraint {
     
     public Constraint CHECK(String condition)
     {
-        this.text += "CHECK("+ condition +") ";
+        this.text += " CHECK("+ condition +") ";
         return new Constraint(this.text);
     }
     

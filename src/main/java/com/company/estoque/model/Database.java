@@ -7,6 +7,7 @@ package com.company.estoque.model;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -42,5 +43,16 @@ public class Database {
         catch (SQLException e) {
             System.err.println(e);
         }
+    }
+    
+    public static Statement getStatement() throws Exception {
+        try {
+            return Database.getConnection().createStatement();
+        }
+        catch(SQLException e)
+        {
+            System.err.println(e);
+        }
+        throw new Exception("Não foi possível criar o Statement.");
     }
 }
