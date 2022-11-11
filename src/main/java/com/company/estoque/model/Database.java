@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- *
+ * Classe responsavel somente pela conexão ao banco de dados.
  * @author guilu
  */
 public class Database {
