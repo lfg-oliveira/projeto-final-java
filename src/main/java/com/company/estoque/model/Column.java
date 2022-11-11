@@ -6,7 +6,7 @@ package com.company.estoque.model;
 
 
 /**
- *
+ * Cada coluna representa uma coluna no banco de dados
  * @author guilu
  */
 public class Column {
