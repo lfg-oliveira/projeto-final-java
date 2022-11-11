@@ -57,6 +57,11 @@ public class MenuPrincipalView extends javax.swing.JFrame {
         btnExcluir.setText("Excluir");
         btnExcluir.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnExcluir.setBorderPainted(false);
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         btnLista.setBackground(new java.awt.Color(0, 102, 51));
         btnLista.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 10)); // NOI18N
@@ -147,6 +152,11 @@ public class MenuPrincipalView extends javax.swing.JFrame {
         new EditarView().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        new ListaProdutosView().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     /**
      * @param args the command line arguments

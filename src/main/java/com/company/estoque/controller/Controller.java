@@ -16,7 +16,7 @@ import java.util.Map;
 public interface Controller<T extends Schema> {
     public ResultSet read();
     public ResultSet read(String ...where);
-    public void create(String ...values);
+    public void create(String ...values) throws Exception;
     public void delete(int id);
     public void update(Map<String, Object> updates, String ...where);
 }

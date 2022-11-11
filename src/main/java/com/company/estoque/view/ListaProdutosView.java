@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -168,15 +169,18 @@ public class ListaProdutosView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        int row = jTable1.getSelectedRow();
-        int id = Integer.parseInt(jTable1.getValueAt(row, 0).toString());
-        pc.delete(id);
-        try {
-            this.populateTable();
-        } catch (SQLException ex) {
-            Logger.getLogger(ListaProdutosView.class.getName()).log(Level.SEVERE, null, ex);
+        var option = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir o item selecionado? "
+                + "A ação não poderá ser desfeita.", "Deseja mesmo cancelar?", JOptionPane.YES_NO_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            int row = jTable1.getSelectedRow();
+            int id = Integer.parseInt(jTable1.getValueAt(row, 0).toString());
+            pc.delete(id);
+            try {
+                this.populateTable();
+            } catch (SQLException ex) {
+                Logger.getLogger(ListaProdutosView.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked

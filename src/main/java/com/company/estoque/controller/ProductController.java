@@ -27,11 +27,12 @@ public class ProductController implements Controller<Products> {
     }
 
     @Override
-    public void create(String... values) {
+    public void create(String... values) throws Exception{
         try {
             prod.insert(values);
         } catch (Exception ex) {
             Logger.getLogger(ProductController.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
         }
     }
 
