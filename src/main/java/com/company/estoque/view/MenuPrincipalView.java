@@ -40,7 +40,7 @@ public class MenuPrincipalView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        btnCadastrar.setBackground(new java.awt.Color(0, 102, 0));
+        btnCadastrar.setBackground(new java.awt.Color(0, 102, 51));
         btnCadastrar.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 10)); // NOI18N
         btnCadastrar.setForeground(new java.awt.Color(255, 255, 255));
         btnCadastrar.setText("Cadastrar");
