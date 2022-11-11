@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -203,10 +204,18 @@ public class EditarView extends javax.swing.JFrame {
         updates.put("preco", txtValor.getText());
         updates.put("qtde_estoque", txtEstoque.getText());
         pc.update(updates, "rowid = "+this.id);
+        JOptionPane.showMessageDialog(this, "Sucesso ao editar.");
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        var option = JOptionPane.showConfirmDialog(this, "Quer mesmo "
+                + "cancelar e voltar ao menu principal? Todas as informações "
+                + "aqui serão perdidas,", "Cancelar", JOptionPane.YES_NO_OPTION);
+        if(option == JOptionPane.YES_OPTION)
+        {
+            MenuPrincipalView.newFrame();
+            this.dispose();
+        }
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed

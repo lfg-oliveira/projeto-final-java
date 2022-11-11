@@ -7,6 +7,7 @@ package com.company.estoque.view;
 import com.company.estoque.controller.ProductController;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -37,7 +38,7 @@ public class ListaProdutosView extends javax.swing.JFrame {
     private void populateTable() throws SQLException {
         DefaultTableModel table = (DefaultTableModel) jTable1.getModel();
         table.setRowCount(0);
-
+        rs = pc.read();
         while (rs.next()) {
             int id = rs.getInt(1);
             String nome = rs.getString(2);
@@ -61,6 +62,7 @@ public class ListaProdutosView extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         btnExcluir = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
 
@@ -91,7 +93,7 @@ public class ListaProdutosView extends javax.swing.JFrame {
                 java.lang.Integer.class, java.lang.String.class, java.lang.Double.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -115,6 +117,18 @@ public class ListaProdutosView extends javax.swing.JFrame {
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcluirActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setBackground(new java.awt.Color(0, 153, 0));
+        btnEditar.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 10)); // NOI18N
+        btnEditar.setForeground(new java.awt.Color(255, 255, 255));
+        btnEditar.setText("Editar");
+        btnEditar.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        btnEditar.setBorderPainted(false);
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
             }
         });
 
@@ -145,6 +159,8 @@ public class ListaProdutosView extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -161,7 +177,9 @@ public class ListaProdutosView extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(120, 120, 120)
-                        .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(117, Short.MAX_VALUE))
         );
 
@@ -186,6 +204,21 @@ public class ListaProdutosView extends javax.swing.JFrame {
     private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
         this.dispose();
         MenuPrincipalView.newFrame();    }//GEN-LAST:event_jMenu1MouseClicked
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        var table = (DefaultTableModel) jTable1.getModel();
+        for(int i = 0; i < table.getRowCount(); i++)
+        {
+            var id = table.getValueAt(i, 0).toString();
+            var qtde_estoque = table.getValueAt(i, table.getColumnCount() -1);
+            
+            var update = new HashMap<String, Object>();
+            update.put("qtde_estoque", qtde_estoque);
+            pc.update(update, "rowid", "=", id);
+        }
+        JOptionPane.showMessageDialog(this, "Edição feita com"
+                + " sucesso.");
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -223,6 +256,7 @@ public class ListaProdutosView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

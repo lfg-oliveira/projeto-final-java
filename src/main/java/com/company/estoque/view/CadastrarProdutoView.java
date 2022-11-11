@@ -27,16 +27,20 @@ public class CadastrarProdutoView extends javax.swing.JFrame {
     public CadastrarProdutoView() {
         try {
             initComponents();
-            if (pc.read() != null) {
-                rs = pc.lastRow();
-                rs.next();
-                Integer nextRow = rs.getInt(1) + 1;
-                txtId.setText(nextRow.toString());
-            }
+            nextId();
         } catch (SQLException ex) {
             Logger.getLogger(CadastrarProdutoView.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    private void nextId() throws SQLException {
+        if (pc.read() != null) {
+            rs = pc.lastRow();
+            rs.next();
+            Integer nextRow = rs.getInt(1) + 1;
+            txtId.setText(nextRow.toString());
+        }
     }
 
     /**
@@ -207,6 +211,10 @@ public class CadastrarProdutoView extends javax.swing.JFrame {
                     txtValor.getText(),
                     txtEstoque.getText());
             JOptionPane.showMessageDialog(this, "Sucesso ao cadastrar item.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            nextId();
+            txtEstoque.setText("");
+            txtNome.setText("");
+            txtValor.setText("");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Erro ao cadastrar item.", "Sucesso", JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(CadastrarProdutoView.class.getName()).log(Level.SEVERE, null, ex);

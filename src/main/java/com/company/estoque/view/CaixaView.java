@@ -269,7 +269,7 @@ public class CaixaView extends javax.swing.JFrame {
                 int qtde = Integer.parseInt(table.getValueAt(i, 2).toString());
 
                 var updates = new HashMap<String, Object>();
-                updates.put("qtde_estoque", qtde);
+                updates.put("qtde_estoque", rs.getInt("qtde_estoque") - qtde);
                 calculaTotal();
                 String id = table.getValueAt(i, 0).toString();
                 pc.update(updates, "rowid", "=", id);
